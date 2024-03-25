@@ -3,7 +3,8 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 
-function App() {
+function Login(props) {
+const {setIsLogin}=props
   const handleSubmit = () => {
     const email = document.getElementById("txt1").value;
     const password = document.getElementById("txt2").value;
@@ -21,28 +22,20 @@ function App() {
         console.log(res)
         if (res.status === 401) {
           console.log("invalid credentials123");
+          
         }
-        return res.json();
+        
+       return res.json();
+
       })
       .then((res) => {
         console.log("data",res);
-        fetch("http://localhost:3000/verify", {
-          method: "GET",
-          headers: {
-            authorization: res.token,
-          },
-        })
-          .then((res) => {
-            if (res.status === 401) {
-              console.log("invalid token");
-            }
-            return res.json();
-          })
-          .then((data) => {
-            console.log(data.msg);
-          
-        })
-      });
+        if(res.token){
+        localStorage.setItem("token",res.token)
+        setIsLogin(true)
+        }
+      
+      })
   };
 
   return (
@@ -65,6 +58,22 @@ function App() {
       </div>
     </>
   );
+}
+
+const Home=()=>{
+  return (
+    <>
+    <h1>Home</h1>
+    </>
+  )
+}
+
+const App=()=>{
+const[isLogin,setIsLogin]=useState(false)
+if(isLogin){
+  return (<Home/>)
+}
+  return (<Login setIsLogin={setIsLogin}/>)
 }
 
 export default App;
